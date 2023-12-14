@@ -45,6 +45,36 @@ async function run() {
             res.send(result);
         })
 
+        app.get("/api/v1/user/completed-sessions", async (req, res) => {
+            const userEmail = req.query.email;
+            const query = { email: userEmail };
+            
+            const array = await usersCollection.find(query).toArray();
+           
+            const filteredArr = array.filter(item => {
+                if (item.isSessionCompleted) {
+                    return item;
+                }
+            })
+          
+            res.send(filteredArr);
+        })
+
+        app.get("/api/v1/user/incompleted-sessions", async (req, res) => {
+            const userEmail = req.query.email;
+            const query = { email: userEmail };
+           
+            const array = await usersCollection.find(query).toArray();
+           
+            const filteredArr = array.filter(item => {
+                if (!item.isSessionCompleted) {
+                    return item;
+                }
+            })
+           
+            res.send(filteredArr);
+        })
+
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // // Ensures that the client will close when you finish/error
